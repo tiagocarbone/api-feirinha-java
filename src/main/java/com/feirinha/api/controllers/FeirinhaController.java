@@ -2,6 +2,10 @@ package com.feirinha.api.controllers;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.feirinha.api.repositories.FeirinhaRepository;
+
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,30 +21,34 @@ import org.springframework.web.bind.annotation.PutMapping;
 @RequestMapping("items")
 public class FeirinhaController {
 
+    private final FeirinhaRepository feirinhaRepository;
+
+    FeirinhaController (FeirinhaRepository feirinhaRepository){
+        this.feirinhaRepository = feirinhaRepository;
+    }
+
+    
+
     @GetMapping()
     public ResponseEntity<Object> getItems() {
-        // todo
 
         return ResponseEntity.status(HttpStatus.OK).body("ffc");
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> getItemsById(@PathVariable("id") Long id) {
-        // todo
 
         return ResponseEntity.status(HttpStatus.OK).body("ffc");
     }
 
     @PostMapping()
     public ResponseEntity<Object> postItem (@RequestBody String body) {
-        //TODO: process POST request
         
         return ResponseEntity.status(HttpStatus.OK).body("ffc");
     }
     
     @PutMapping("/{id}")
     public ResponseEntity<Object> putItem(@PathVariable("id") Long id, @RequestBody String body) {
-        //TODO: process PUT request
         
         return ResponseEntity.status(HttpStatus.OK).body("ffc");
     }
