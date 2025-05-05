@@ -1,5 +1,7 @@
 package com.feirinha.api.models;
 
+import com.feirinha.api.dtos.ItemDTO;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -31,4 +33,11 @@ public class ItemModel {
     @Min(value = 1, message = "A quantidade deve ser maior que zero")
     @Column(nullable = false)
     private Integer quantity;
+
+
+    public ItemModel(ItemDTO dto){
+        this.name = dto.getName();
+        this.quantity = dto.getQuantity();
+    }
+
 }

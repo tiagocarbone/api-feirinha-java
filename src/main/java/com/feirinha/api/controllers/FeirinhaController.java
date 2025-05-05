@@ -3,8 +3,15 @@ package com.feirinha.api.controllers;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.feirinha.api.dtos.ItemDTO;
+import com.feirinha.api.models.ItemModel;
 import com.feirinha.api.repositories.FeirinhaRepository;
+import com.feirinha.api.services.FeirinhaService;
 
+import jakarta.validation.Valid;
+
+import java.lang.foreign.Linker.Option;
+import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,41 +28,54 @@ import org.springframework.web.bind.annotation.PutMapping;
 @RequestMapping("items")
 public class FeirinhaController {
 
-    private final FeirinhaRepository feirinhaRepository;
+    private final FeirinhaService feirinhaService;
 
-    FeirinhaController (FeirinhaRepository feirinhaRepository){
-        this.feirinhaRepository = feirinhaRepository;
+    FeirinhaController (FeirinhaService feirinhaService){
+        this.feirinhaService = feirinhaService;
     }
-
-    
 
     @GetMapping()
     public ResponseEntity<Object> getItems() {
 
-        return ResponseEntity.status(HttpStatus.OK).body("ffc");
+        return ResponseEntity.status(HttpStatus.OK).body(feirinhaService.getItems());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> getItemsById(@PathVariable("id") Long id) {
 
-        return ResponseEntity.status(HttpStatus.OK).body("ffc");
+        Optional<ItemModel> item = feirinhaService.getItemById(id);
+
+        if(!item.isPresent()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Item with this id not found");
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(item.get());
     }
 
     @PostMapping()
-    public ResponseEntity<Object> postItem (@RequestBody String body) {
+    public ResponseEntity<Object> postItem (@RequestBody @Valid ItemDTO body) {
         
-        return ResponseEntity.status(HttpStatus.OK).body("ffc");
+        ItemModel item = feirinhaService.createItem(body);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(item);
     }
     
     @PutMapping("/{id}")
-    public ResponseEntity<Object> putItem(@PathVariable("id") Long id, @RequestBody String body) {
+    public ResponseEntity<Object> putItem(@PathVariable("id") Long id, @RequestBody @Valid ItemDTO body) {
         
-        return ResponseEntity.status(HttpStatus.OK).body("ffc");
+        Optional<ItemModel> item = feirinhaService.updateItem(id, body);
+
+        if(!item.isPresent()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(item.get());
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteItem(@PathVariable("id") Long id ){
-        return ResponseEntity.status(HttpStatus.OK).body("ffc");
+        feirinhaService.deleteItem(id);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
 
