@@ -8,8 +8,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,15 +23,11 @@ public class ItemModel {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @NotNull(message = "O titulo é obrigatório")
     @Column(length = 150, nullable = false)
     private String name;
 
-    @NotNull(message = "A quantidade é obrigatória")
-    @Min(value = 1, message = "A quantidade deve ser maior que zero")
     @Column(nullable = false)
     private Integer quantity;
-
 
     public ItemModel(ItemDTO dto){
         this.name = dto.getName();

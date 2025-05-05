@@ -11,41 +11,42 @@ import com.feirinha.api.repositories.FeirinhaRepository;
 
 @Service
 public class FeirinhaService {
-    
+
     final FeirinhaRepository feirinhaRepository;
 
-    public FeirinhaService(FeirinhaRepository feirinhaRepository){
+    public FeirinhaService(FeirinhaRepository feirinhaRepository) {
         this.feirinhaRepository = feirinhaRepository;
     }
 
-
-    public List<ItemModel> getItems(){
+    public List<ItemModel> getItems() {
         return feirinhaRepository.findAll();
     }
 
-
-    public Optional<ItemModel> getItemById(Long id){
+    public Optional<ItemModel> getItemById(Long id) {
         Optional<ItemModel> item = feirinhaRepository.findById(id);
 
-        if(!item.isPresent()){
+        if (!item.isPresent()) {
             return Optional.empty();
-        }else{
+        } else {
             return item;
         }
     }
 
+    public Optional<ItemModel> createItem(ItemDTO body) {
 
-    public ItemModel createItem(ItemDTO body){
+        if(feirinhaRepository.existsByName(body.getName())){
+            return Optional.empty();
+        }
         ItemModel item = new ItemModel(body);
         feirinhaRepository.save(item);
 
-        return item;
+        return Optional.of(item);
     }
 
-    public Optional<ItemModel> updateItem(Long id, ItemDTO body){
+    public Optional<ItemModel> updateItem(Long id, ItemDTO body) {
         Optional<ItemModel> item = feirinhaRepository.findById(id);
 
-        if(!item.isPresent()){
+        if (!item.isPresent()) {
             return Optional.empty();
         }
 
@@ -55,8 +56,7 @@ public class FeirinhaService {
         return Optional.of(newItem);
     }
 
-
-    public void deleteItem(Long id){
+    public void deleteItem(Long id) {
         feirinhaRepository.deleteById(id);
     }
 

@@ -5,12 +5,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.feirinha.api.dtos.ItemDTO;
 import com.feirinha.api.models.ItemModel;
-import com.feirinha.api.repositories.FeirinhaRepository;
 import com.feirinha.api.services.FeirinhaService;
 
 import jakarta.validation.Valid;
-
-import java.lang.foreign.Linker.Option;
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
@@ -43,6 +40,10 @@ public class FeirinhaController {
     @GetMapping("/{id}")
     public ResponseEntity<Object> getItemsById(@PathVariable("id") Long id) {
 
+        if(id <= 0){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Formato de id inválido");
+        }
+
         Optional<ItemModel> item = feirinhaService.getItemById(id);
 
         if(!item.isPresent()){
@@ -55,14 +56,21 @@ public class FeirinhaController {
     @PostMapping()
     public ResponseEntity<Object> postItem (@RequestBody @Valid ItemDTO body) {
         
-        ItemModel item = feirinhaService.createItem(body);
+        Optional<ItemModel> item = feirinhaService.createItem(body);
+        if(!item.isPresent()){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Já existe item com esse nome");
+        }
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(item);
+        return ResponseEntity.status(HttpStatus.CREATED).body(item.get());
     }
     
     @PutMapping("/{id}")
     public ResponseEntity<Object> putItem(@PathVariable("id") Long id, @RequestBody @Valid ItemDTO body) {
-        
+
+        if(id <= 0){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Formato de id inválido");
+        }
+
         Optional<ItemModel> item = feirinhaService.updateItem(id, body);
 
         if(!item.isPresent()){
@@ -74,8 +82,13 @@ public class FeirinhaController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteItem(@PathVariable("id") Long id ){
+
+        if(id <= 0){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Formato de id inválido");
+        }
+
         feirinhaService.deleteItem(id);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
 
