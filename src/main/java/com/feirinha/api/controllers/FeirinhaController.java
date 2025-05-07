@@ -87,7 +87,10 @@ public class FeirinhaController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Formato de id inválido");
         }
 
-        feirinhaService.deleteItem(id);
+        Optional<ItemModel> item = feirinhaService.deleteItem(id);
+        if(!item.isPresent()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Item with this id not found");
+        }
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 

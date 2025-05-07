@@ -56,8 +56,17 @@ public class FeirinhaService {
         return Optional.of(newItem);
     }
 
-    public void deleteItem(Long id) {
+    public Optional<ItemModel> deleteItem(Long id) {
+
+       
+        Optional<ItemModel> item = feirinhaRepository.findById(id);
+
+        if (!item.isPresent()) {
+            return Optional.empty();
+        }
+        
         feirinhaRepository.deleteById(id);
+        return item;
     }
 
 }
